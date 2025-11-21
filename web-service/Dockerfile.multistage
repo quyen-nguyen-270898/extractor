@@ -12,10 +12,10 @@ RUN if [ -d examples/web-service ]; then \
 			printf "rootProject.name='minimal'\ninclude 'web-service'\n" > settings.gradle && \
 			./gradlew -Dexample.buildDir=/tmp/example-build :web-service:shadowJar --no-daemon; \
 		fi
-
-FROM eclipse-temurin:17-jre
-WORKDIR /app
-# Copy only the built jar
+		# find produced jar and place it under examples/web-service/build/libs so COPY succeeds
+		mkdir -p /workspace/examples/web-service/build/libs && \
+		jar=$(find /workspace -type f -name '*web-service*.jar' | head -n1) && \
+		if [ -n "$jar" ]; then cp "$jar" /workspace/examples/web-service/build/libs/; fi
 COPY --from=build /workspace/examples/web-service/build/libs/*.jar /app/web-service.jar
 EXPOSE 7000
 ENV PORT=7000
