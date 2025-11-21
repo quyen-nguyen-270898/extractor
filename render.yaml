@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: newpipe-web-service
+    env: docker
+    dockerfilePath: web-service/Dockerfile.multistage
+    plan: starter
+    autoDeploy: true
+    region: oregon
+    startCommand: java -jar /app/web-service.jar
+    healthCheckPath: /health
