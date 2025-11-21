@@ -4,7 +4,14 @@ WORKDIR /workspace
 COPY . .
 # Use Gradle wrapper to build the example jar only. Set example.buildDir to /tmp to
 # avoid permission issues on filesystems that don't support POSIX modes.
-RUN ./gradlew -p examples/web-service -Dexample.buildDir=/tmp/example-build shadowJar --no-daemon
+RUN if [ -d examples/web-service ]; then \
+			printf "rootProject.name='minimal'\ninclude 'examples:web-service'\n" > settings.gradle && \
+			./gradlew -Dexample.buildDir=/tmp/example-build :examples-web-service:shadowJar --no-daemon || true; \
+		fi && \
+		if [ -d web-service ]; then \
+			printf "rootProject.name='minimal'\ninclude 'web-service'\n" > settings.gradle && \
+			./gradlew -Dexample.buildDir=/tmp/example-build :web-service:shadowJar --no-daemon; \
+		fi
 
 FROM eclipse-temurin:17-jre
 WORKDIR /app
