@@ -13,8 +13,3 @@ COPY --from=build /workspace/examples/web-service/build/libs/*.jar /app/web-serv
 EXPOSE 7000
 ENV PORT=7000
 ENTRYPOINT ["java","-jar","/app/web-service.jar"]
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY build/libs/web-service.jar /app/web-service.jar
-EXPOSE 7000
-ENTRYPOINT ["java","-jar","/app/web-service.jar"]
